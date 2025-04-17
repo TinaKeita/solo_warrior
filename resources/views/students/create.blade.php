@@ -1,6 +1,6 @@
 <x-layout>
-<x-slot:title>Izveidot studentu</x-slot:title>
-  <h1>Izveidot studnetu</h1>
+<x-slot:title>Pievienot studentu</x-slot:title>
+  <h1>Pievienot studnetu</h1>
   <form  method="POST" action="/students">
   @csrf
     <input name="first_name" placeholder="First name"/>
