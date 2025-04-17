@@ -1,11 +1,25 @@
 <header>
 <nav>
-    <ul>
-       <li><a href="/">Sākums</a></li>
-       <li><a href="/grades">Visas atzīmes</a></li>
-       <li><a href="/grades/create">+ Pievienot jaunu atzīmi</a></li>
-       <li><a href="/students">Studenti</a></li>
-       <li><a href="/subjects">Priekšmeti</a></li>
-    </ul>
+    <a href="/">Sākums</a>
+
+    @auth
+        @if (auth()->user()->role === 'teacher')
+            <a href="/grades">Visas atzīmes</a>
+            <a href="/students">Skolēni</a>
+            <a href="/subjects">Priekšmeti</a>
+        @else
+            <a href="/grades">Manas atzīmes</a>
+        @endif
+    <form method="POST" action="/logout">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Izrakstīties</button>
+    </form>
+
+    @else
+        <a href="/register">Reģistrēties</a>
+        <a href="/login">Ienākt</a>
+    @endauth
 </nav>
+
 </header>

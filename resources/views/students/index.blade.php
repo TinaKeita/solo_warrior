@@ -1,8 +1,17 @@
 <x-layout>
-    <h1>Visi studenti</h1>
-    <a href="/students/create"> Pievienot jaunu studentu</a>
+    <x-slot:title>Visi studenti</x-slot:title>
 
-    @foreach ($students as $student)
-        <li><a href="/students/{{ $student->id }}">{{ $student->first_name }} {{ $student->last_name }}</a></li>
-    @endforeach
+    <h1>Visi studenti</h1>
+
+    <ul>
+        @forelse ($students as $student)
+            <li>
+                <a href="{{ route('students.show', $student->id) }}">
+                    {{ $student->last_name }} {{ $student->first_name }}
+                </a>
+            </li>
+        @empty
+            <li>Nav neviena studenta.</li>
+        @endforelse
+    </ul>
 </x-layout>

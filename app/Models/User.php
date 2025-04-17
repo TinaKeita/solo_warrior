@@ -2,31 +2,28 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Masīvs ar lauciņiem, kurus drīkst masveidā piešķirt (`mass assignable`).
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'birth_date',
+        'role',
         'email',
         'password',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Lauki, kas jāslēpj, kad modelis tiek serializēts (piemēram, JSON atbildēs).
      */
     protected $hidden = [
         'password',
@@ -34,15 +31,16 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Lauki, kas jātransformē uz konkrētu tipu.
      */
-    protected function casts(): array
+    protected $casts = [
+        'birth_date' => 'date',
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed', // Laravel >=10 automātiski hešo
+    ];
+
+    public function grades()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Grade::class, 'user_id');
     }
 }

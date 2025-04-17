@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('grades', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            // Šeit definējam student_id un sasaistām to ar 'users' tabulu
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // Ja priekšmeti ir saistīti ar 'subjects' tabulu, tad:
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->integer('grade');
             $table->timestamp('graded_at')->useCurrent(); 
             $table->timestamps();
         });
-        
     }
 
     /**
