@@ -1,11 +1,20 @@
 <x-layout>
-    <h1>Visas atzīmes</h1>
+<h1>
+    @if (auth()->user()->role === 'teacher')
+        Visas atzīmes
+    @else
+        Manas atzīmes
+    @endif
+</h1>
+
 
     <form method="GET" action="/grades">
+    @if (auth()->user()->role === 'teacher')
         <label>
             Meklēt studentu:
             <input type="text" name="student_name" value="{{ request('student_name') }}" placeholder="Vārds vai uzvārds">
         </label>
+    @endif
 
         <label>
             Priekšmets:
@@ -19,18 +28,13 @@
             </select>
         </label>
 
-        <label>
-            Kārtošana:
-            <select name="sort">
-                <option value="asc" @if(request('sort') == 'asc') selected @endif>Atzīme augošā</option>
-                <option value="desc" @if(request('sort') == 'desc') selected @endif>Atzīme dilstošā</option>
-            </select>
-        </label>
-
         <button type="submit">Meklēt</button>
     </form>
 
+    @if (auth()->user()->role === 'teacher')
     <a href="/grades/create">Pievienot jaunu atzīmi</a>
+    @endif
+
 
     <table border="1" cellpadding="10">
         <thead>
@@ -38,7 +42,9 @@
                 <th>Students</th>
                 <th>Priekšmets</th>
                 <th>Atzīme</th>
-                <th>Darbības</th>
+                @if (auth()->user()->role === 'teacher')
+                    <th>Darbības</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -51,14 +57,16 @@
                 @endif
                 <td>{{ $grade->subject->subject_name }}</td>
                 <td>{{ $grade->grade }}</td>
+                @if (auth()->user()->role === 'teacher')
                 <td>
                     <a href="/grades/{{ $grade->id }}/edit">Labot</a>
                     <form method="POST" action="/grades/{{ $grade->id }}" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
+                    @csrf
+                    @method('DELETE')
                         <button type="submit">Dzēst</button>
                     </form>
-                </td>
+                </td> 
+                @endif
             </tr>
         @endforeach
         </tbody>

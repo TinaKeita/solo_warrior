@@ -6,11 +6,11 @@
     <p>Dzimšanas datums: {{ $student->birth_date }}</p>
 
     <div class="button-container">
+    <form method="POST" action="/students/{{ $student->id }}" style="width: 50px; display: inline-block;">
+        @csrf
+        @method("delete")
+        <button onclick="return confirm('Vai tiešām dzēst šo studentu?')">Dzēst</button>
+    </form>
+</div>
 
-        <form method="POST" action="/students/{{ $student->id }}">
-            @csrf
-            @method("delete")
-            <button onclick="return confirm('Vai tiešām dzēst šo studentu?')">Dzēst</button>
-        </form>
-    </div>
 </x-layout>

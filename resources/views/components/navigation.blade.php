@@ -10,6 +10,7 @@
         @else
             <a href="/grades">Manas atzīmes</a>
         @endif
+            <a href="/profile">Profils</a>
     <form method="POST" action="/logout">
         @csrf
         @method('DELETE')

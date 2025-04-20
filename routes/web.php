@@ -4,6 +4,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () { return view('welcome');});
@@ -38,3 +39,7 @@ Route::post('/register', [RegisterController::class, 'store']);
 Route::get('/login', [SessionController::class, 'create'])->name('login')->middleware('guest');
 Route::post('/login', [SessionController::class, 'store']);
 Route::delete('/logout', [SessionController::class, 'destroy']);
+
+//prof
+Route::get('/profile', [ProfileController::class, 'edit'])->middleware('auth');
+Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth');
