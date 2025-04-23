@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Reģistrācija</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <x-navigation></x-navigation>
@@ -21,10 +22,10 @@
     @endif
 
     <label>Vārds:</label>
-    <input name="first_name" value="{{ old('first_name') }}" required><br><br>
+    <input type="text" name="first_name" value="{{ old('first_name') }}" required><br><br>
 
     <label>Uzvārds:</label>
-    <input name="last_name" value="{{ old('last_name') }}" required><br><br>
+    <input type="text" name="last_name" value="{{ old('last_name') }}" required><br><br>
 
     <label>E-pasts:</label>
     <input type="email" name="email" value="{{ old('email') }}" required><br><br>

@@ -26,4 +26,5 @@ class StudentController extends Controller
         $student->delete(); // Dzēšam studentu
         return redirect("/students");
     }
+    
 }

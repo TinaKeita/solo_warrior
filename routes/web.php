@@ -43,3 +43,5 @@ Route::delete('/logout', [SessionController::class, 'destroy']);
 //prof
 Route::get('/profile', [ProfileController::class, 'edit'])->middleware('auth');
 Route::post('/profile', [ProfileController::class, 'update'])->middleware('auth');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->middleware('auth');
+

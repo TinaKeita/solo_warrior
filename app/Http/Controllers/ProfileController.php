@@ -7,26 +7,55 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function edit()
-    {
-        $user = Auth::user();
-        return view('profile.edit', compact('user'));
-    }
-
-    public function update(Request $request)
+    // Show the profile edit page
+public function edit()
 {
-    
+    return view('profile.edit', [
+        'user' => auth()->user(), // Pass the currently logged-in user
+    ]);
+}
+
+// Update the profile information
+public function update(Request $request)
+{
+    // Validate the inputs
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'birth_date' => 'nullable|date',
+        'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
     $user = auth()->user();
 
+    // Update the user information
+    $user->first_name = $request->input('first_name');
+    $user->last_name = $request->input('last_name');
+    $user->email = $request->input('email');
+    $user->birth_date = $request->input('birth_date');
+
+    // Handle profile photo upload
     if ($request->hasFile('profile_photo')) {
-        $path = $request->file('profile_photo')->store('profile_photos', 'public');
-        $user->profile_photo_path = $path;
+        $photoPath = $request->file('profile_photo')->store('profile_photos', 'public');
+        $user->profile_photo_path = $photoPath;
     }
 
     $user->save();
 
-    return redirect('/profile')->with('success', 'Profila bilde atjaunināta!');
+    return redirect('/profile')->with('success', 'Profils ir atjaunināts!');
 }
+
+
+public function destroy(Request $request)
+{
+    $user = $request->user();
+    Auth::logout();
+    $user->delete();
+
+    return redirect('/')->with('success', 'Profils dzēsts.');
+}
+
 
 }
 

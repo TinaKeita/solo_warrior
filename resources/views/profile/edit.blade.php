@@ -11,25 +11,61 @@
         @endif
     </div>
 
-    <h1 style="text-align: center;">Mans profils</h1>
+    <h1 style="text-align: center;">Rediģēt profilu</h1>
 
     @if(session('success'))
         <p style="color: green; text-align: center;">{{ session('success') }}</p>
     @endif
 
+    <!-- Edit Profile Form -->
     <form method="POST" action="/profile" enctype="multipart/form-data" style="max-width: 500px; margin: 0 auto;">
         @csrf
 
-        <p><strong>Vārds:</strong> {{ $user->first_name }}</p>
-        <p><strong>Uzvārds:</strong> {{ $user->last_name }}</p>
-        <p><strong>E-pasts:</strong> {{ $user->email }}</p>
-        <p><strong>Dzimšanas diena:</strong> {{ $user->birth_date }}</p>
-
-        <div style="margin: 20px 0;">
-            <label>Augšupielādēt profila attēlu:</label><br>
-            <input type="file" name="profile_photo">
+        <!-- First Name Field -->
+        <div>
+            <label for="first_name">Vārds:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}" style="width: 100%; padding: 10px; margin: 5px 0;">
         </div>
 
-        <button type="submit">Saglabāt</button>
+        <!-- Last Name Field -->
+        <div>
+            <label for="last_name">Uzvārds:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}" style="width: 100%; padding: 10px; margin: 5px 0;">
+        </div>
+
+        <!-- Email Field -->
+        <div>
+            <label for="email">E-pasts:</label>
+            <input type="email" id="email" name="email" value="{{ $user->email }}" style="width: 100%; padding: 10px; margin: 5px 0;">
+        </div>
+
+        <!-- Birth Date Field -->
+        <div>
+            <label for="birth_date">Dzimšanas datums:</label>
+            <input type="date" id="birth_date" name="birth_date" value="{{ $user->birth_date }}" style="width: 100%; padding: 10px; margin: 5px 0;">
+        </div>
+
+        <!-- Profile Image Upload -->
+        <div style="margin: 20px 0;">
+            <label for="profile_photo">Augšupielādēt jaunu profila attēlu:</label><br>
+            <input type="file" id="profile_photo" name="profile_photo" style="width: 100%; padding: 10px;">
+        </div>
+
+        <!-- Submit Buttons (Save & Edit) -->
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px;">Saglabāt</button>
+            <a href="/profile" style="text-decoration: none;">
+                <button type="button" style="background-color:rgb(126, 152, 84); color: white; padding: 10px 15px; border: none; border-radius: 5px;">Atcelt</button>
+            </a>
+        </div>
     </form>
+
+    <!-- DELETE Option -->
+    <div style="text-align: center; margin-top: 30px;">
+        <form method="POST" action="/profile" style="display: inline-block;" onsubmit="return confirm('Vai tiešām vēlies dzēst savu profilu?')">
+            @csrf
+            @method('DELETE')
+            <button type="submit" style="background-color: #e74c3c; color: white; padding: 10px 15px; border: none; border-radius: 5px;">Dzēst profilu</button>
+        </form>
+    </div>
 </x-layout>
