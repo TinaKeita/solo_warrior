@@ -3,7 +3,7 @@
   <h1>Pievienot priekšmetu</h1>
   <form  method="POST" action="/subjects">
   @csrf
-    <input name="subject_name" placeholder="Priekšmets"/>
+    <input type="text" name="subject_name" placeholder="Priekšmets"/>
     @error("subject_name")
         <p>{{ $message }}</p>
     @enderror

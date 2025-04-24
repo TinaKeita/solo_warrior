@@ -1,4 +1,5 @@
 <x-layout>
+    <!-- Profilbilde un informācija -->
     <div style="text-align: center; margin-bottom: 30px;">
         @if($user->profile_photo_path)
             <img src="{{ asset('storage/' . $user->profile_photo_path) }}"
@@ -11,61 +12,102 @@
         @endif
     </div>
 
-    <h1 style="text-align: center;">Rediģēt profilu</h1>
+    <h2 style="text-align: center;">{{ $user->first_name }} {{ $user->last_name }}</h2>
+    <p style="text-align: center;">E-pasts: {{ $user->email }}</p>
+    <p style="text-align: center;">Dzimšanas datums: {{ $user->birth_date }}</p>
 
+    <!-- Success message -->
     @if(session('success'))
         <p style="color: green; text-align: center;">{{ session('success') }}</p>
     @endif
 
-    <!-- Edit Profile Form -->
-    <form method="POST" action="/profile" enctype="multipart/form-data" style="max-width: 500px; margin: 0 auto;">
-        @csrf
+    <!-- Edit Button that opens modal -->
+    <div style="text-align: center; margin: 20px 0;">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+            Rediģēt profilu
+        </button>
+    </div>
 
-        <!-- First Name Field -->
-        <div>
-            <label for="first_name">Vārds:</label>
-            <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}" style="width: 100%; padding: 10px; margin: 5px 0;">
-        </div>
-
-        <!-- Last Name Field -->
-        <div>
-            <label for="last_name">Uzvārds:</label>
-            <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}" style="width: 100%; padding: 10px; margin: 5px 0;">
-        </div>
-
-        <!-- Email Field -->
-        <div>
-            <label for="email">E-pasts:</label>
-            <input type="email" id="email" name="email" value="{{ $user->email }}" style="width: 100%; padding: 10px; margin: 5px 0;">
-        </div>
-
-        <!-- Birth Date Field -->
-        <div>
-            <label for="birth_date">Dzimšanas datums:</label>
-            <input type="date" id="birth_date" name="birth_date" value="{{ $user->birth_date }}" style="width: 100%; padding: 10px; margin: 5px 0;">
-        </div>
-
-        <!-- Profile Image Upload -->
-        <div style="margin: 20px 0;">
-            <label for="profile_photo">Augšupielādēt jaunu profila attēlu:</label><br>
-            <input type="file" id="profile_photo" name="profile_photo" style="width: 100%; padding: 10px;">
-        </div>
-
-        <!-- Submit Buttons (Save & Edit) -->
-        <div style="display: flex; justify-content: center; gap: 10px;">
-            <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px;">Saglabāt</button>
-            <a href="/profile" style="text-decoration: none;">
-                <button type="button" style="background-color:rgb(126, 152, 84); color: white; padding: 10px 15px; border: none; border-radius: 5px;">Atcelt</button>
-            </a>
-        </div>
-    </form>
-
-    <!-- DELETE Option -->
-    <div style="text-align: center; margin-top: 30px;">
-        <form method="POST" action="/profile" style="display: inline-block;" onsubmit="return confirm('Vai tiešām vēlies dzēst savu profilu?')">
+    <!-- Dzēst pogu -->
+    <div style="text-align: center;">
+        <form method="POST" action="/profile" onsubmit="return confirm('Vai tiešām vēlies dzēst savu profilu?')" style="display: inline-block;">
             @csrf
             @method('DELETE')
-            <button type="submit" style="background-color: #e74c3c; color: white; padding: 10px 15px; border: none; border-radius: 5px;">Dzēst profilu</button>
+            <button type="submit" class="btn btn-danger">Dzēst profilu</button>
         </form>
     </div>
+
+    <!-- MODAL: Profile Edit Form -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="/profile" enctype="multipart/form-data" class="modal-content">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Rediģēt profilu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Aizvērt"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">Vārds:</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ $user->first_name }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Uzvārds:</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ $user->last_name }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-pasts:</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="birth_date" class="form-label">Dzimšanas datums:</label>
+                        <input type="date" class="form-control" id="birth_date" name="birth_date" 
+                        value="{{ old('birth_date', optional($user->birth_date)->format('Y-m-d')) }}">
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="profile_photo" class="form-label">Jauns profila attēls:</label>
+                        <input type="file" class="form-control" id="profile_photo" name="profile_photo">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Atcelt</button>
+                    <button type="submit" class="btn btn-success">Saglabāt izmaiņas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 CSS & JS (ja nav jau iekļauti) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('#editProfileModal form');
+
+        form.addEventListener('submit', function (e) {
+            const firstName = form.querySelector('#first_name').value.trim();
+            const lastName = form.querySelector('#last_name').value.trim();
+            const email = form.querySelector('#email').value.trim();
+            const birthDate = form.querySelector('#birth_date').value.trim();
+
+            let errors = [];
+
+            if (!firstName) errors.push('Vārds ir obligāts.');
+            if (!lastName) errors.push('Uzvārds ir obligāts.');
+            if (!email) errors.push('E-pasts ir obligāts.');
+            if (!birthDate) errors.push('Dzimšanas datums ir obligāts.');
+
+            if (errors.length > 0) {
+                e.preventDefault();
+                alert(errors.join('\n'));
+            }
+        });
+    });
+</script>
+
 </x-layout>

@@ -8,28 +8,55 @@
 </h1>
 
 
-    <form method="GET" action="/grades">
+    <form method="GET" action="/grades" id="gradesFilterForm" style="display: flex; align-items: center; gap: 10px;">
     @if (auth()->user()->role === 'teacher')
-        <label>
+        <label style="display: flex; align-items: center; gap: 5px;">
             Meklēt studentu:
             <input type="text" name="student_name" value="{{ request('student_name') }}" placeholder="Vārds vai uzvārds">
+            
+            <!-- Sort Order Button -->
+            <button type="button" id="sortToggleBtn" style="background: none; border: none; cursor: pointer;">
+                <img id="sortIcon" src="{{ request('sort_order', 'asc') === 'asc' ? asset('icons/arrow-down.svg') : asset('icons/arrow-up.svg') }}"
+                     alt="Kārtošanas virziens" width="16" height="16">
+            </button>
         </label>
+
+        <input type="hidden" name="sort_order" id="sort_order" value="{{ request('sort_order', 'asc') }}">
     @endif
 
-        <label>
-            Priekšmets:
-            <select name="subject_id">
-                <option value="">-- Visi priekšmeti --</option>
-                @foreach ($allSubjects as $subject)
-                    <option value="{{ $subject->id }}" @if(request('subject_id') == $subject->id) selected @endif>
-                        {{ $subject->subject_name }}
-                    </option>
-                @endforeach
-            </select>
-        </label>
+    <label>
+        Priekšmets:
+        <select name="subject_id">
+            <option value="">-- Visi priekšmeti --</option>
+            @foreach ($allSubjects as $subject)
+                <option value="{{ $subject->id }}" @if(request('subject_id') == $subject->id) selected @endif>
+                    {{ $subject->subject_name }}
+                </option>
+            @endforeach
+        </select>
+    </label>
 
-        <button type="submit">Meklēt</button>
-    </form>
+    <button type="submit">Meklēt</button>
+</form>
+
+<script>
+    document.getElementById('sortToggleBtn')?.addEventListener('click', function () {
+        const sortInput = document.getElementById('sort_order');
+        const icon = document.getElementById('sortIcon');
+        const form = document.getElementById('gradesFilterForm');
+
+        // Toggle value
+        sortInput.value = sortInput.value === 'asc' ? 'desc' : 'asc';
+
+        // Toggle icon
+        icon.src = sortInput.value === 'asc'
+            ? "{{ asset('icons/arrow-down.svg') }}"
+            : "{{ asset('icons/arrow-up.svg') }}";
+
+        form.submit();
+    });
+</script>
+
 
     @if (auth()->user()->role === 'teacher')
     <a href="/grades/create">Pievienot jaunu atzīmi</a>

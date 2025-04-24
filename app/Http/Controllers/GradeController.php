@@ -21,11 +21,14 @@ class GradeController extends Controller
     } else {
         // Teacher: can search by student name
         if ($request->student_name) {
-            $query->whereHas('student', function ($q) use ($request) {
-                $q->where('first_name', 'like', "%{$request->student_name}%")
-                  ->orWhere('last_name', 'like', "%{$request->student_name}%");
+            $search = $request->student_name;
+            $query->whereHas('student', function ($q) use ($search) {
+                $q->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"])
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%");
             });
         }
+        
     }
 
     // Subject filter
@@ -34,10 +37,11 @@ class GradeController extends Controller
     }
 
     //sort
-    $grades = $query->join('users', 'grades.user_id', '=', 'users.id')  // Join with users table
-    ->orderBy('users.last_name', $request->input('sort', 'asc'))  // Sort by last name
-    ->select('grades.*')  // Ensure only the grades columns are selected
-    ->get();
+    $grades = $query->orderBy(User::select('last_name')
+        ->whereColumn('users.id', 'grades.user_id')
+        , $request->input('sort', 'asc'))
+        ->get();
+
 
 $allSubjects = \App\Models\Subject::orderBy('subject_name')->get();
 
